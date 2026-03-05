@@ -1,11 +1,6 @@
 # @package _global_
 defaults:
-  - override /hydra/launcher: submitit_local
+  - override /hydra/launcher: basic
 
-hydra:
-  launcher:
-    submitit_folder: ${hydra.run.dir}/submitit_logs/%j
-    timeout_min: 2880
-    nodes: ${trainer.num_nodes}
-    gpus_per_node: ${trainer.devices}
-    tasks_per_node: 1
+# No additional launcher config needed for basic launcher
+# It runs jobs sequentially on the local machine

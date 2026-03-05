@@ -213,6 +213,66 @@ class TDSConv2dBlock(nn.Module):
         return self.layer_norm(x)  # TNC
 
 
+class LSTMEncoder(nn.Module):
+    def __init__(
+        self,
+        num_features: int,
+        hidden_size: int = 384,
+        num_layers: int = 2,
+        bidirectional: bool = True,
+        dropout: float = 0.1,
+    ) -> None:
+        super().__init__()
+        self.lstm = nn.LSTM(
+            input_size=num_features,
+            hidden_size=hidden_size,
+            num_layers=num_layers,
+            dropout=dropout if num_layers > 1 else 0.0,
+            bidirectional=bidirectional,
+        )
+        self.out_dim = hidden_size * (2 if bidirectional else 1)
+        self.proj = nn.Linear(self.out_dim, num_features)
+        self.layer_norm = nn.LayerNorm(num_features)
+        
+    def forward(self, inputs: torch.Tensor) -> torch.Tensor:
+        # inputs: (T, N, C)
+        x, _ = self.lstm(inputs)  # (T, N, out_dim)
+        x = self.proj(x)  # (T, N, C)
+        x = x + inputs  # residual
+        return self.layer_norm(x) 
+
+class GRUEncoder(nn.Module):
+    def __init__(
+        self,
+        num_features: int,
+        hidden_size: int = 384,
+        num_layers: int = 2,
+        bidirectional: bool = True,
+        dropout: float = 0.1,
+    ) -> None:
+        super().__init__()
+        self.gru = nn.GRU(
+            input_size=num_features,
+            hidden_size=hidden_size,
+            num_layers=num_layers,
+            dropout=dropout if num_layers > 1 else 0.0,
+            bidirectional=bidirectional,
+            # By default, PyTorch GRU expects input as (seq_len, batch, features).
+            # If your input is (batch, seq_len, features), add batch_first=True here.
+        )
+        self.out_dim = hidden_size * (2 if bidirectional else 1)
+        self.proj = nn.Linear(self.out_dim, num_features)
+        self.layer_norm = nn.LayerNorm(num_features)
+
+    def forward(self, inputs: torch.Tensor) -> torch.Tensor:
+        # inputs: (seq_len, batch_size, num_features) by default for nn.GRU
+        x, _ = self.gru(inputs)  # (seq_len, batch_size, out_dim)
+        x = self.proj(x)  # Project back to (seq_len, batch_size, num_features)
+        x = x + inputs  # Residual connection
+        return self.layer_norm(x)
+
+
+
 class TDSFullyConnectedBlock(nn.Module):
     """A fully connected block as per "Sequence-to-Sequence Speech
     Recognition with Time-Depth Separable Convolutions, Hannun et al"
