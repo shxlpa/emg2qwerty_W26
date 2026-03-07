@@ -8,6 +8,7 @@ from collections.abc import Sequence
 
 import torch
 from torch import nn
+from torch import Tensor
 
 
 class SpectrogramNorm(nn.Module):
@@ -271,7 +272,225 @@ class GRUEncoder(nn.Module):
         x = x + inputs  # Residual connection
         return self.layer_norm(x)
 
+class TransformerEncoderLayer(nn.Module):
+    """
+    Simplified TransformerEncoderLayer
+    """
 
+    def __init__(
+       self,
+       num_features: int,
+       nhead: int=8,
+       dim_feedforward: int = 2048,
+       dropout: float = 0.1):
+       super().__init__()
+       self.self_attn = nn.MultiheadAttention(num_features, nhead, dropout=dropout, batch_first=True)
+       self.linear1 = nn.Linear(num_features, dim_feedforward)
+       self.dropout = nn.Dropout(dropout)
+       self.linear2 = nn.Linear(dim_feedforward, num_features)
+       self.norm1 = nn.LayerNorm(num_features)
+       self.norm2 = nn.LayerNorm(num_features)
+       self.dropout1 = nn.Dropout(dropout)
+       self.dropout2 = nn.Dropout(dropout)
+       self.activation = nn.ReLU()
+
+    def forward(self, src: Tensor, src_mask: Tensor = None, src_key_padding_mask: Tensor = None) -> Tensor:
+        src2 = self.self_attn(src, src, src, attn_mask=src_mask, key_padding_mask=src_key_padding_mask)[0]
+        src = src + self.dropout1(src2)
+        src = self.norm1(src)
+        src2 = self.linear2(self.dropout(self.activation(self.linear1(src))))
+        src = src + self.dropout2(src2)
+        src = self.norm2(src)
+        return src
+
+class TransformerEncoder(nn.Module):
+    """
+    TransformerEncoder with a stack of TransformerEncoderLayer
+    """
+
+    def __init__(
+      self,
+      num_features: int,
+      nhead: int=8,
+      num_layers: int=2,
+      dim_feedforward: int = 2048,
+      dropout: float = 0.1):
+        super().__init__()
+        self.layers = nn.ModuleList([
+            TransformerEncoderLayer(num_features, nhead, dim_feedforward, dropout)
+            for _ in range(num_layers)
+        ])
+        self.num_layers = num_layers
+
+    def forward(self, src: Tensor, mask: Tensor = None, src_key_padding_mask: Tensor = None) -> Tensor:
+        output = src
+        for mod in self.layers:
+            output = mod(output, src_mask=mask, src_key_padding_mask=src_key_padding_mask)
+        return output
+
+
+
+class Hybrid_CNN_LSTMEncoder(nn.Module):
+    """A hybrid encoder combining TDSConvEncoder and LSTMEncoder.
+
+    Args:
+        num_features (int): `num_features` for an input of shape (T, N, num_features).
+        tds_block_channels (Sequence[int]): A list of integers indicating the number
+            of channels per `TDSConv2dBlock`.
+        tds_kernel_width (int): The kernel size of the temporal convolutions for TDSConvEncoder.
+        hidden_size (int): The number of features in the hidden state of the LSTM.
+        num_layers (int): Number of recurrent layers for LSTM.
+        bidirectional (bool): If True, becomes a bidirectional LSTM.
+        dropout (float): If non-zero, introduces a Dropout layer on the outputs
+            of each LSTM layer except the last one.
+    """
+
+    def __init__(
+        self,
+        num_features: int,
+        tds_block_channels: Sequence[int] = (24, 24, 24, 24),
+        tds_kernel_width: int = 32,
+        hidden_size: int = 384,
+        num_layers: int = 2,
+        bidirectional: bool = True,
+        dropout: float = 0.1,
+    ) -> None:
+        super().__init__()
+
+        self.tds_encoder = TDSConvEncoder(
+            num_features=num_features,
+            block_channels=tds_block_channels,
+            kernel_width=tds_kernel_width,
+        )
+
+        self.lstm_encoder = LSTMEncoder(
+            num_features=num_features, # Output features of TDSConvEncoder are input features for LSTMEncoder
+            hidden_size=hidden_size,
+            num_layers=num_layers,
+            bidirectional=bidirectional,
+            dropout=dropout,
+        )
+
+    def forward(self, inputs: torch.Tensor) -> torch.Tensor:
+        # First, pass through the TDSConvEncoder
+        tds_output = self.tds_encoder(inputs)
+
+        # Then, pass the output of TDSConvEncoder to the LSTMEncoder
+        lstm_output = self.lstm_encoder(tds_output)
+
+        return lstm_output
+
+
+
+class Hybrid_CNN_GRUEncoder(nn.Module):
+    """A hybrid encoder combining TDSConvEncoder and GRUEncoder.
+
+    Args:
+        num_features (int): `num_features` for an input of shape (T, N, num_features).
+        tds_block_channels (Sequence[int]): A list of integers indicating the number
+            of channels per `TDSConv2dBlock`.
+        tds_kernel_width (int): The kernel size of the temporal convolutions for TDSConvEncoder.
+        gru_hidden_size (int): The number of features in the hidden state of the GRU.
+        gru_num_layers (int): Number of recurrent layers for GRU.
+        gru_bidirectional (bool): If True, becomes a bidirectional GRU.
+        gru_dropout (float): If non-zero, introduces a Dropout layer on the outputs
+            of each GRU layer except the last one.
+    """
+
+    def __init__(
+        self,
+        num_features: int,
+        tds_block_channels: Sequence[int] = (24, 24, 24, 24),
+        tds_kernel_width: int = 32,
+        hidden_size: int = 384,
+        num_layers: int = 2,
+        bidirectional: bool = True,
+        dropout: float = 0.1,
+    ) -> None:
+        super().__init__()
+
+        self.tds_encoder = TDSConvEncoder(
+            num_features=num_features,
+            block_channels=tds_block_channels,
+            kernel_width=tds_kernel_width,
+        )
+
+        self.gru_encoder = GRUEncoder(
+            num_features=num_features, # Output features of TDSConvEncoder are input features for GRUEncoder
+            hidden_size=hidden_size,
+            num_layers=num_layers,
+            bidirectional=bidirectional,
+            dropout=dropout,
+        )
+
+    def forward(self, inputs: torch.Tensor) -> torch.Tensor:
+        # First, pass through the TDSConvEncoder
+        tds_output = self.tds_encoder(inputs)
+
+        # Then, pass the output of TDSConvEncoder to the GRUEncoder
+        gru_output = self.gru_encoder(tds_output)
+
+        return gru_output
+
+
+class Hybrid_CNN_TransformerEncoder(nn.Module):
+    """A hybrid encoder combining TDSConvEncoder and TransformerEncoder.
+
+    Args:
+        num_features (int): `num_features` for an input of shape (T, N, num_features).
+        tds_block_channels (Sequence[int]): A list of integers indicating the number
+            of channels per `TDSConv2dBlock`.
+        tds_kernel_width (int): The kernel size of the temporal convolutions for TDSConvEncoder.
+        transformer_nhead (int): The number of attention heads in the TransformerEncoder.
+        transformer_num_layers (int): The number of TransformerEncoderLayer modules.
+        transformer_dim_feedforward (int): The dimension of the feedforward network model in TransformerEncoder.
+        transformer_dropout (float): The dropout value for TransformerEncoder.
+    """
+
+    def __init__(
+        self,
+        num_features: int,
+        tds_block_channels: Sequence[int] = (24, 24, 24, 24),
+        tds_kernel_width: int = 32,
+        transformer_nhead: int = 8,
+        num_layers: int = 2,
+        transformer_dim_feedforward: int = 2048,
+        dropout: float = 0.1,
+    ) -> None:
+        super().__init__()
+
+        self.tds_encoder = TDSConvEncoder(
+            num_features=num_features,
+            block_channels=tds_block_channels,
+            kernel_width=tds_kernel_width,
+        )
+
+        self.transformer_encoder = TransformerEncoder(
+            num_features=num_features, # Output features of TDSConvEncoder are input features for TransformerEncoder
+            nhead=transformer_nhead,
+            num_layers=num_layers,
+            dim_feedforward=transformer_dim_feedforward,
+            dropout=dropout,
+        )
+
+    def forward(self, inputs: torch.Tensor) -> torch.Tensor:
+        # First, pass through the TDSConvEncoder
+        tds_output = self.tds_encoder(inputs)
+
+        # Then, pass the output of TDSConvEncoder to the TransformerEncoder
+        # TransformerEncoder expects (batch_size, sequence_length, num_features) if batch_first=True
+        # The TDSConvEncoder outputs (T, N, num_features), so we need to permute it to (N, T, num_features)
+        # before passing to TransformerEncoder if batch_first=True, then permute back.
+        # Given the TransformerEncoder definition in the context uses batch_first=True implicitly in MultiheadAttention,
+        # we need to permute.
+
+        # Permute from (T, N, num_features) to (N, T, num_features)
+        tds_output_permuted = tds_output.permute(1, 0, 2)
+
+        transformer_output = self.transformer_encoder(tds_output_permuted)
+
+        # Permute back from (N, T, num_features) to (T, N, num_features) to maintain consistency with previous encoders
+        return transformer_output.permute(1, 0, 2)
 
 class TDSFullyConnectedBlock(nn.Module):
     """A fully connected block as per "Sequence-to-Sequence Speech

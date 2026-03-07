@@ -26,7 +26,11 @@ from emg2qwerty.modules import (
     SpectrogramNorm,
     TDSConvEncoder,
     LSTMEncoder,
-    GRUEncoder
+    GRUEncoder,
+    TransformerEncoder,
+    Hybrid_CNN_LSTMEncoder,
+    Hybrid_CNN_GRUEncoder,
+    Hybrid_CNN_TransformerEncoder
 )
 from emg2qwerty.transforms import Transform
 
@@ -152,6 +156,7 @@ class TDSConvCTCModule(pl.LightningModule):
         optimizer: DictConfig,
         lr_scheduler: DictConfig,
         decoder: DictConfig,
+
     ) -> None:
         super().__init__()
         self.save_hyperparameters()
@@ -171,22 +176,58 @@ class TDSConvCTCModule(pl.LightningModule):
             ),
             # (T, N, num_features)
             nn.Flatten(start_dim=2),
+
             #TDSConvEncoder(
             #    num_features=num_features,
             #    block_channels=block_channels,
             #    kernel_width=kernel_width,
             #),
+
             #LSTMEncoder(
-            #  num_features,
+            #  num_features=num_features,
             #  hidden_size=384,
             #  num_layers=2,
             #  bidirectional=True),
 
-            GRUEncoder(
-              num_features,
-              hidden_size=384,
-              num_layers=2,
-              bidirectional=True),
+            #GRUEncoder(
+            #  num_features=num_features,
+            #  hidden_size=384,
+            #  num_layers=2,
+            #  bidirectional=True),
+
+            #TransformerEncoder(
+            #    num_features=num_features,
+            #    nhead=8,
+            #    num_layers=2,
+            #    dim_feedforward = 2048,
+            #),
+
+            #Hybrid_CNN_LSTMEncoder(
+            #    num_features=num_features,
+            #    tds_block_channels=(24, 24, 24, 24),
+            #    tds_kernel_width=32,
+            #    hidden_size=384,
+            #    num_layers=2,
+            #    bidirectional=True,
+            #),
+
+            #Hybrid_CNN_GRUEncoder(
+            #    num_features=num_features,
+            #    tds_block_channels=(24, 24, 24, 24),
+            #    tds_kernel_width=32,
+            #    hidden_size=384,
+            #    num_layers=2,
+            #    bidirectional=True,
+            #),
+
+            Hybrid_CNN_TransformerEncoder(
+                num_features=num_features,
+                tds_block_channels=(24, 24, 24, 24),
+                tds_kernel_width=32,
+                transformer_nhead=8,
+                num_layers=2,
+                transformer_dim_feedforward=2048,
+            ),
 
             # (T, N, num_classes)
             nn.Linear(num_features, charset().num_classes),
