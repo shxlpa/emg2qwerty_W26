@@ -43,8 +43,8 @@ dmypy.json
 .hypothesis
 
 # Logs and checkpoints
-logs/
-lightning_logs/
+#logs/
+#lightning_logs/
 
 # Data
 data

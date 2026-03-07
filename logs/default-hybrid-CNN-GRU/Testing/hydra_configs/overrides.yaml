@@ -1,0 +1,5 @@
+- user=single_user
+- checkpoint='/content/drive/MyDrive/Colab Notebooks/c247a_final/emg2qwerty_W26/logs/2026-03-07/01-26-32/job0_trainer.devices=1,user=single_user/checkpoints/epoch=29-step=3600.ckpt'
+- train=False
+- trainer.accelerator=gpu
+- decoder=ctc_greedy
