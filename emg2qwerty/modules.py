@@ -278,21 +278,21 @@ class TransformerEncoderLayer(nn.Module):
     """
 
     def __init__(
-       self,
-       num_features: int,
-       nhead: int=8,
-       dim_feedforward: int = 2048,
-       dropout: float = 0.1):
-       super().__init__()
-       self.self_attn = nn.MultiheadAttention(num_features, nhead, dropout=dropout, batch_first=True)
-       self.linear1 = nn.Linear(num_features, dim_feedforward)
-       self.dropout = nn.Dropout(dropout)
-       self.linear2 = nn.Linear(dim_feedforward, num_features)
-       self.norm1 = nn.LayerNorm(num_features)
-       self.norm2 = nn.LayerNorm(num_features)
-       self.dropout1 = nn.Dropout(dropout)
-       self.dropout2 = nn.Dropout(dropout)
-       self.activation = nn.ReLU()
+        self,
+        num_features: int,
+        nhead: int=8,
+        dim_feedforward: int = 2048,
+        dropout: float = 0.1):
+        super().__init__()
+        self.self_attn = nn.MultiheadAttention(num_features,nhead, dropout=dropout, batch_first=False)  # CHANGED
+        self.linear1 = nn.Linear(num_features, dim_feedforward)
+        self.dropout = nn.Dropout(dropout)
+        self.linear2 = nn.Linear(dim_feedforward, num_features)
+        self.norm1 = nn.LayerNorm(num_features)
+        self.norm2 = nn.LayerNorm(num_features)
+        self.dropout1 = nn.Dropout(dropout)
+        self.dropout2 = nn.Dropout(dropout)
+        self.activation = nn.ReLU()
 
     def forward(self, src: Tensor, src_mask: Tensor = None, src_key_padding_mask: Tensor = None) -> Tensor:
         src2 = self.self_attn(src, src, src, attn_mask=src_mask, key_padding_mask=src_key_padding_mask)[0]
@@ -476,21 +476,9 @@ class Hybrid_CNN_TransformerEncoder(nn.Module):
     def forward(self, inputs: torch.Tensor) -> torch.Tensor:
         # First, pass through the TDSConvEncoder
         tds_output = self.tds_encoder(inputs)
+        transformer_output = self.transformer_encoder(tds_output)  # CHANGED
 
-        # Then, pass the output of TDSConvEncoder to the TransformerEncoder
-        # TransformerEncoder expects (batch_size, sequence_length, num_features) if batch_first=True
-        # The TDSConvEncoder outputs (T, N, num_features), so we need to permute it to (N, T, num_features)
-        # before passing to TransformerEncoder if batch_first=True, then permute back.
-        # Given the TransformerEncoder definition in the context uses batch_first=True implicitly in MultiheadAttention,
-        # we need to permute.
-
-        # Permute from (T, N, num_features) to (N, T, num_features)
-        tds_output_permuted = tds_output.permute(1, 0, 2)
-
-        transformer_output = self.transformer_encoder(tds_output_permuted)
-
-        # Permute back from (N, T, num_features) to (T, N, num_features) to maintain consistency with previous encoders
-        return transformer_output.permute(1, 0, 2)
+        return transformer_output  # CHANGED
 
 class TDSFullyConnectedBlock(nn.Module):
     """A fully connected block as per "Sequence-to-Sequence Speech
@@ -557,3 +545,74 @@ class TDSConvEncoder(nn.Module):
 
     def forward(self, inputs: torch.Tensor) -> torch.Tensor:
         return self.tds_conv_blocks(inputs)  # (T, N, num_features)
+
+class Hybrid_CNN_RNNEncoder(nn.Module):
+    def __init__(
+        self,
+        num_features: int,
+        conv_channels: int = 256,
+        hidden_size: int = 384,
+        num_layers: int = 2,
+        bidirectional: bool = True,
+        kernel_size: int = 3,
+        dropout: float = 0.1,
+    ) -> None:
+        super().__init__()
+
+        if kernel_size % 2 == 0:
+            raise ValueError("kernel_size must be odd to preserve sequence length.")
+
+        self.conv = nn.Sequential(
+            nn.Conv1d(
+                in_channels=num_features,
+                out_channels=conv_channels,
+                kernel_size=kernel_size,
+                padding=kernel_size // 2,
+            ),
+            nn.GELU(),
+            nn.Dropout(dropout),
+            nn.Conv1d(
+                in_channels=conv_channels,
+                out_channels=conv_channels,
+                kernel_size=kernel_size,
+                padding=kernel_size // 2,
+            ),
+            nn.GELU(),
+            nn.Dropout(dropout),
+        )
+
+        self.rnn = nn.RNN(
+            input_size=conv_channels,
+            hidden_size=hidden_size,
+            num_layers=num_layers,
+            nonlinearity="tanh",
+            dropout=dropout if num_layers > 1 else 0.0,
+            bidirectional=bidirectional,
+        )
+
+        out_dim = hidden_size * (2 if bidirectional else 1)
+        self.proj = nn.Linear(out_dim, num_features)
+        self.layer_norm = nn.LayerNorm(num_features)
+
+    def forward(self, inputs: torch.Tensor) -> torch.Tensor:
+        # inputs: (T, N, C)
+        residual = inputs
+
+        # (T, N, C) -> (N, C, T)
+        x = inputs.permute(1, 2, 0)
+
+        # CNN over time
+        x = self.conv(x)  # (N, conv_channels, T)
+
+        # (N, conv_channels, T) -> (T, N, conv_channels)
+        x = x.permute(2, 0, 1)
+
+        # RNN over time
+        x, _ = self.rnn(x)  # (T, N, out_dim)
+
+        # back to original feature dim
+        x = self.proj(x)  # (T, N, C)
+
+        # residual + norm
+        x = x + residual
+        return self.layer_norm(x)
