@@ -1,5 +1,6 @@
 - user=single_user
-- checkpoint='/content/drive/MyDrive/Colab Notebooks/c247a_final/emg2qwerty_W26/logs/default-LSTMEncoder/Training/job0_trainer.devices=1,user=single_user/checkpoints/epoch=29-step=3600.ckpt'
+- checkpoint='/content/drive/MyDrive/Colab Notebooks/c247a_final/emg2qwerty_W26/logs/Training_100/job0_+trainer.limit_train_batches=1.0,trainer.devices=1,user=single_user/checkpoints/epoch=29-step=3600.ckpt'
 - train=False
 - trainer.accelerator=gpu
+- trainer.devices=1
 - decoder=ctc_greedy

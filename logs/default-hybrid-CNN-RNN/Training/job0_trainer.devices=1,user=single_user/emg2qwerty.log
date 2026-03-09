@@ -1,4 +1,4 @@
-[2026-03-07 22:23:16,043][__main__][INFO] - 
+[2026-03-08 20:10:00,199][__main__][INFO] - 
 Config:
 user: single_user
 dataset:
@@ -131,7 +131,7 @@ callbacks:
   save_last: true
   verbose: true
 
-[2026-03-07 22:23:16,046][__main__][INFO] - Instantiating LightningModule {'_target_': 'emg2qwerty.lightning.TDSConvCTCModule', 'in_features': 528, 'mlp_features': [384], 'block_channels': [24, 24, 24, 24], 'kernel_width': 32}
-[2026-03-07 22:23:20,219][__main__][INFO] - Instantiating LightningDataModule {'_target_': 'emg2qwerty.lightning.WindowedEMGDataModule', 'window_length': 8000, 'padding': [1800, 200]}
-[2026-03-07 22:23:45,423][matplotlib.style.core][WARNING] - In /usr/local/lib/python3.12/dist-packages/matplotlib/mpl-data/stylelib/classic.mplstyle: 'parseString' deprecated - use 'parse_string'
-[2026-03-07 22:23:45,424][matplotlib.style.core][WARNING] - In /usr/local/lib/python3.12/dist-packages/matplotlib/mpl-data/stylelib/classic.mplstyle: 'resetCache' deprecated - use 'reset_cache'
+[2026-03-08 20:10:00,203][__main__][INFO] - Instantiating LightningModule {'_target_': 'emg2qwerty.lightning.TDSConvCTCModule', 'in_features': 528, 'mlp_features': [384], 'block_channels': [24, 24, 24, 24], 'kernel_width': 32}
+[2026-03-08 20:10:06,588][__main__][INFO] - Instantiating LightningDataModule {'_target_': 'emg2qwerty.lightning.WindowedEMGDataModule', 'window_length': 8000, 'padding': [1800, 200]}
+[2026-03-08 20:10:37,277][matplotlib.style.core][WARNING] - In /usr/local/lib/python3.12/dist-packages/matplotlib/mpl-data/stylelib/classic.mplstyle: 'parseString' deprecated - use 'parse_string'
+[2026-03-08 20:10:37,278][matplotlib.style.core][WARNING] - In /usr/local/lib/python3.12/dist-packages/matplotlib/mpl-data/stylelib/classic.mplstyle: 'resetCache' deprecated - use 'reset_cache'

@@ -146,7 +146,7 @@ hydra:
     - path: ''
       schema: structured
       provider: schema
-    output_dir: /content/drive/MyDrive/Colab Notebooks/c247a_final/emg2qwerty_W26/logs/2026-03-05/01-13-45/job0_trainer.devices=1,user=single_user
+    output_dir: /content/drive/MyDrive/Colab Notebooks/c247a_final/emg2qwerty_W26/logs/2026-03-09/05-12-51/job0_trainer.devices=1,user=single_user
     choices:
       cluster: local
       decoder: ctc_greedy

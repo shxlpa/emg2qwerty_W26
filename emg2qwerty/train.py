@@ -45,8 +45,11 @@ def main(config: DictConfig):
     def _full_session_paths(dataset: ListConfig) -> list[Path]:
         sessions = [session["session"] for session in dataset]
         return [
-            Path(config.dataset.root).joinpath(f"{session}.hdf5")
-            for session in sessions
+            Path(config.dataset.root).joinpath(
+                str(entry["user"]),
+                f'{entry["session"]}.hdf5'
+            )
+            for entry in dataset
         ]
 
     # Helper to instantiate transforms

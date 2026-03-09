@@ -113,14 +113,15 @@ hydra:
     - hydra.mode=RUN
     task:
     - user=single_user
-    - checkpoint='/content/drive/MyDrive/Colab Notebooks/c247a_final/emg2qwerty_W26/logs/default-LSTMEncoder/Training/job0_trainer.devices=1,user=single_user/checkpoints/epoch=29-step=3600.ckpt'
+    - checkpoint='/content/drive/MyDrive/Colab Notebooks/c247a_final/emg2qwerty_W26/logs/Training_100/job0_+trainer.limit_train_batches=1.0,trainer.devices=1,user=single_user/checkpoints/epoch=29-step=3600.ckpt'
     - train=False
     - trainer.accelerator=gpu
+    - trainer.devices=1
     - decoder=ctc_greedy
   job:
     name: emg2qwerty
     chdir: null
-    override_dirname: decoder=ctc_greedy,train=False,user=single_user
+    override_dirname: decoder=ctc_greedy,train=False,trainer.devices=1,user=single_user
     id: ???
     num: ???
     config_name: base
@@ -148,7 +149,7 @@ hydra:
     - path: ''
       schema: structured
       provider: schema
-    output_dir: /content/drive/MyDrive/Colab Notebooks/c247a_final/emg2qwerty_W26/logs/2026-03-07/03-57-27
+    output_dir: /content/drive/MyDrive/Colab Notebooks/c247a_final/emg2qwerty_W26/logs/2026-03-08/03-58-10
     choices:
       cluster: local
       decoder: ctc_greedy

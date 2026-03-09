@@ -1,4 +1,4 @@
-[2026-03-07 22:43:00,035][__main__][INFO] - 
+[2026-03-08 20:30:26,866][__main__][INFO] - 
 Config:
 user: single_user
 dataset:
@@ -131,6 +131,6 @@ callbacks:
   save_last: true
   verbose: true
 
-[2026-03-07 22:43:00,039][__main__][INFO] - Instantiating LightningModule {'_target_': 'emg2qwerty.lightning.TDSConvCTCModule', 'in_features': 528, 'mlp_features': [384], 'block_channels': [24, 24, 24, 24], 'kernel_width': 32}
-[2026-03-07 22:43:00,135][__main__][INFO] - Loading module from checkpoint /content/drive/MyDrive/Colab Notebooks/c247a_final/emg2qwerty_W26/logs/default-hybrid-CNN-RNN/Training/job0_trainer.devices=1,user=single_user/checkpoints/epoch=29-step=3600.ckpt
-[2026-03-07 22:43:00,220][__main__][INFO] - Instantiating LightningDataModule {'_target_': 'emg2qwerty.lightning.WindowedEMGDataModule', 'window_length': 8000, 'padding': [1800, 200]}
+[2026-03-08 20:30:26,869][__main__][INFO] - Instantiating LightningModule {'_target_': 'emg2qwerty.lightning.TDSConvCTCModule', 'in_features': 528, 'mlp_features': [384], 'block_channels': [24, 24, 24, 24], 'kernel_width': 32}
+[2026-03-08 20:30:27,020][__main__][INFO] - Loading module from checkpoint /content/drive/MyDrive/Colab Notebooks/c247a_final/emg2qwerty_W26/logs/default-hybrid-CNN-RNN/Training/job0_trainer.devices=1,user=single_user/checkpoints/epoch=29-step=3600.ckpt
+[2026-03-08 20:30:27,214][__main__][INFO] - Instantiating LightningDataModule {'_target_': 'emg2qwerty.lightning.WindowedEMGDataModule', 'window_length': 8000, 'padding': [1800, 200]}

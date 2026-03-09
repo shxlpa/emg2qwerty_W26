@@ -184,11 +184,11 @@ class TDSConvCTCModule(pl.LightningModule):
             #    kernel_width=kernel_width,
             #),
 
-            #LSTMEncoder(
-            #  num_features=num_features,
-            #  hidden_size=384,
-            #  num_layers=2,
-            #  bidirectional=True),
+            LSTMEncoder(
+             num_features=num_features,
+             hidden_size=384,
+             num_layers=2,
+             bidirectional=True),
 
             #GRUEncoder(
             #  num_features=num_features,
@@ -203,14 +203,14 @@ class TDSConvCTCModule(pl.LightningModule):
             #    dim_feedforward = 2048,
             # ),
 
-            Hybrid_CNN_LSTMEncoder(
-               num_features=num_features,
-               tds_block_channels=(24, 24, 24, 24),
-               tds_kernel_width=32,
-               hidden_size=384,
-               num_layers=2,
-               bidirectional=True,
-            ),
+            # Hybrid_CNN_LSTMEncoder(
+            #    num_features=num_features,
+            #    tds_block_channels=(24, 24, 24, 24),
+            #    tds_kernel_width=32,
+            #    hidden_size=384,
+            #    num_layers=2,
+            #    bidirectional=True,
+            # ),
 
             #Hybrid_CNN_GRUEncoder(
             #    num_features=num_features,

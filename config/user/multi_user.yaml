@@ -1,0 +1,89 @@
+# @package _global_
+user: multi_user
+dataset:
+  root: ./content/drive/MyDrive/Colab Notebooks/c247a_final/emg2qwerty_W26/
+  train:
+  - user: 89335547
+    session: 2021-06-02-1622679967-keystrokes-dca-study@1-0efbe614-9ae6-4131-9192-4398359b4f5f
+  - user: 89335547
+    session: 2021-06-03-1622766673-keystrokes-dca-study@1-0efbe614-9ae6-4131-9192-4398359b4f5f
+  - user: 89335547
+    session: 2021-07-21-1626917264-keystrokes-dca-study@1-0efbe614-9ae6-4131-9192-4398359b4f5f
+  - user: 89335547
+    session: 2021-06-04-1622863166-keystrokes-dca-study@1-0efbe614-9ae6-4131-9192-4398359b4f5f
+  - user: 89335547
+    session: 2021-07-22-1627003020-keystrokes-dca-study@1-0efbe614-9ae6-4131-9192-4398359b4f5f
+  - user: 89335547
+    session: 2021-06-04-1622861066-keystrokes-dca-study@1-0efbe614-9ae6-4131-9192-4398359b4f5f
+  - user: 89335547
+    session: 2021-07-22-1627004019-keystrokes-dca-study@1-0efbe614-9ae6-4131-9192-4398359b4f5f
+  - user: 89335547
+    session: 2021-06-02-1622682789-keystrokes-dca-study@1-0efbe614-9ae6-4131-9192-4398359b4f5f
+  - user: 89335547
+    session: 2021-06-03-1622764398-keystrokes-dca-study@1-0efbe614-9ae6-4131-9192-4398359b4f5f
+  - user: 89335547
+    session: 2021-06-04-1622862148-keystrokes-dca-study@1-0efbe614-9ae6-4131-9192-4398359b4f5f
+  - user: 89335547
+    session: 2021-06-05-1622884635-keystrokes-dca-study@1-0efbe614-9ae6-4131-9192-4398359b4f5f
+  - user: 89335547
+    session: 2021-07-21-1626916256-keystrokes-dca-study@1-0efbe614-9ae6-4131-9192-4398359b4f5f
+  - user: 89335547
+    session: 2021-06-05-1622885888-keystrokes-dca-study@1-0efbe614-9ae6-4131-9192-4398359b4f5f
+  - user: 89335547
+    session: 2021-06-03-1622765527-keystrokes-dca-study@1-0efbe614-9ae6-4131-9192-4398359b4f5f
+  - user: 41556660
+    session: 2021-06-24-1624589274-keystrokes-dca-study@1-4d5c9cdd-f8bf-4d76-b875-b529c26f3b24
+  - user: 41556660
+    session: 2021-06-21-1624328214-keystrokes-dca-study@1-4d5c9cdd-f8bf-4d76-b875-b529c26f3b24
+  - user: 41556660
+    session: 2021-06-24-1624588160-keystrokes-dca-study@1-4d5c9cdd-f8bf-4d76-b875-b529c26f3b24
+  - user: 41556660
+    session: 2021-06-22-1624416037-keystrokes-dca-study@1-4d5c9cdd-f8bf-4d76-b875-b529c26f3b24
+  - user: 41556660
+    session: 2021-06-21-1624331225-keystrokes-dca-study@1-4d5c9cdd-f8bf-4d76-b875-b529c26f3b24
+  - user: 41556660
+    session: 2021-06-22-1624417224-keystrokes-dca-study@1-4d5c9cdd-f8bf-4d76-b875-b529c26f3b24
+  - user: 41556660
+    session: 2021-06-21-1624329801-keystrokes-dca-study@1-4d5c9cdd-f8bf-4d76-b875-b529c26f3b24
+  - user: 41556660
+    session: 2021-06-23-1624505114-keystrokes-dca-study@1-4d5c9cdd-f8bf-4d76-b875-b529c26f3b24
+  - user: 41556660
+    session: 2021-06-24-1624586972-keystrokes-dca-study@1-4d5c9cdd-f8bf-4d76-b875-b529c26f3b24
+  - user: 41556660
+    session: 2021-06-23-1624503974-keystrokes-dca-study@1-4d5c9cdd-f8bf-4d76-b875-b529c26f3b24
+  - user: 14312238
+    session: 2021-06-21-1624330758-keystrokes-dca-study@1-a4147f22-42a8-4a04-80d3-f634b625c0d1
+  - user: 14312238
+    session: 2021-06-19-1624160478-keystrokes-dca-study@1-a4147f22-42a8-4a04-80d3-f634b625c0d1
+  - user: 14312238
+    session: 2021-06-21-1624328420-keystrokes-dca-study@1-a4147f22-42a8-4a04-80d3-f634b625c0d1
+  - user: 14312238
+    session: 2021-06-18-1624062318-keystrokes-dca-study@1-a4147f22-42a8-4a04-80d3-f634b625c0d1
+  - user: 14312238
+    session: 2021-06-17-1623986110-keystrokes-dca-study@1-a4147f22-42a8-4a04-80d3-f634b625c0d1
+  - user: 14312238
+    session: 2021-06-18-1624064019-keystrokes-dca-study@1-a4147f22-42a8-4a04-80d3-f634b625c0d1
+  - user: 14312238
+    session: 2021-06-23-1624478264-keystrokes-dca-study@1-a4147f22-42a8-4a04-80d3-f634b625c0d1
+  - user: 14312238
+    session: 2021-06-23-1624482051-keystrokes-dca-study@1-a4147f22-42a8-4a04-80d3-f634b625c0d1
+  - user: 14312238
+    session: 2021-06-23-1624469032-keystrokes-dca-study@1-a4147f22-42a8-4a04-80d3-f634b625c0d1
+  val:
+  - user: 89335547
+    session: 2021-07-22-1627001995-keystrokes-dca-study@1-0efbe614-9ae6-4131-9192-4398359b4f5f
+  - user: 89335547
+    session: 2021-06-05-1622889105-keystrokes-dca-study@1-0efbe614-9ae6-4131-9192-4398359b4f5f
+  - user: 41556660
+    session: 2021-06-23-1624502705-keystrokes-dca-study@1-4d5c9cdd-f8bf-4d76-b875-b529c26f3b24
+  - user: 14312238
+    session: 2021-06-23-1624472983-keystrokes-dca-study@1-a4147f22-42a8-4a04-80d3-f634b625c0d1
+  test:
+  - user: 89335547
+    session: 2021-07-21-1626915176-keystrokes-dca-study@1-0efbe614-9ae6-4131-9192-4398359b4f5f
+  - user: 89335547
+    session: 2021-06-02-1622681518-keystrokes-dca-study@1-0efbe614-9ae6-4131-9192-4398359b4f5f
+  - user: 41556660
+    session: 2021-06-22-1624418454-keystrokes-dca-study@1-4d5c9cdd-f8bf-4d76-b875-b529c26f3b24
+  - user: 14312238
+    session: 2021-06-18-1624039299-keystrokes-dca-study@1-a4147f22-42a8-4a04-80d3-f634b625c0d1

@@ -115,10 +115,11 @@ hydra:
     - user=single_user
     - trainer.accelerator=gpu
     - trainer.devices=1
+    - +trainer.limit_train_batches=1.0
   job:
     name: emg2qwerty
     chdir: null
-    override_dirname: trainer.devices=1,user=single_user
+    override_dirname: +trainer.limit_train_batches=1.0,trainer.devices=1,user=single_user
     id: ???
     num: ???
     config_name: base
@@ -287,6 +288,7 @@ trainer:
   num_nodes: 1
   max_epochs: 30
   default_root_dir: ${hydra:runtime.output_dir}
+  limit_train_batches: 1.0
 callbacks:
 - _target_: pytorch_lightning.callbacks.LearningRateMonitor
 - _target_: pytorch_lightning.callbacks.ModelCheckpoint

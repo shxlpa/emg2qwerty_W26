@@ -1,4 +1,4 @@
-[2026-03-05 02:14:47,194][__main__][INFO] - 
+[2026-03-09 05:34:18,166][__main__][INFO] - 
 Config:
 user: single_user
 dataset:
@@ -113,14 +113,14 @@ seed: 1501
 batch_size: 32
 num_workers: 4
 train: false
-checkpoint: /content/drive/MyDrive/Colab Notebooks/c247a_final/emg2qwerty_W26/logs/2026-03-05/01-13-45/job0_trainer.devices=1,user=single_user/checkpoints/epoch=101-step=12240.ckpt
+checkpoint: /content/drive/MyDrive/Colab Notebooks/c247a_final/emg2qwerty_W26/logs/default-TDSConvEncoder/Training/job0_trainer.devices=1,user=single_user/checkpoints/epoch=27-step=3360.ckpt
 monitor_metric: val/CER
 monitor_mode: min
 trainer:
   accelerator: gpu
   devices: 1
   num_nodes: 1
-  max_epochs: 150
+  max_epochs: 30
   default_root_dir: ${hydra:runtime.output_dir}
 callbacks:
 - _target_: pytorch_lightning.callbacks.LearningRateMonitor
@@ -131,6 +131,6 @@ callbacks:
   save_last: true
   verbose: true
 
-[2026-03-05 02:14:47,197][__main__][INFO] - Instantiating LightningModule {'_target_': 'emg2qwerty.lightning.TDSConvCTCModule', 'in_features': 528, 'mlp_features': [384], 'block_channels': [24, 24, 24, 24], 'kernel_width': 32}
-[2026-03-05 02:14:47,278][__main__][INFO] - Loading module from checkpoint /content/drive/MyDrive/Colab Notebooks/c247a_final/emg2qwerty_W26/logs/2026-03-05/01-13-45/job0_trainer.devices=1,user=single_user/checkpoints/epoch=101-step=12240.ckpt
-[2026-03-05 02:14:47,368][__main__][INFO] - Instantiating LightningDataModule {'_target_': 'emg2qwerty.lightning.WindowedEMGDataModule', 'window_length': 8000, 'padding': [1800, 200]}
+[2026-03-09 05:34:18,170][__main__][INFO] - Instantiating LightningModule {'_target_': 'emg2qwerty.lightning.TDSConvCTCModule', 'in_features': 528, 'mlp_features': [384], 'block_channels': [24, 24, 24, 24], 'kernel_width': 32}
+[2026-03-09 05:34:18,304][__main__][INFO] - Loading module from checkpoint /content/drive/MyDrive/Colab Notebooks/c247a_final/emg2qwerty_W26/logs/default-TDSConvEncoder/Training/job0_trainer.devices=1,user=single_user/checkpoints/epoch=27-step=3360.ckpt
+[2026-03-09 05:34:18,462][__main__][INFO] - Instantiating LightningDataModule {'_target_': 'emg2qwerty.lightning.WindowedEMGDataModule', 'window_length': 8000, 'padding': [1800, 200]}
