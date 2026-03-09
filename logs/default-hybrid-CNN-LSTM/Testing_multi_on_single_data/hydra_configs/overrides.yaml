@@ -1,0 +1,5 @@
+- user=single_user
+- checkpoint='./logs/default-hybrid-CNN-LSTM/Training_multi/job0_trainer.devices=1,user=multi_user/checkpoints/epoch=27-step=7896.ckpt'
+- train=False
+- trainer.accelerator=gpu
+- decoder=ctc_greedy

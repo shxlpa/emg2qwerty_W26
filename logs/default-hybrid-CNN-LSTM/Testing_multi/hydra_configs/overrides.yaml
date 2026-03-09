@@ -1,0 +1,5 @@
+- user=multi_user
+- checkpoint='/content/drive/MyDrive/Colab Notebooks/c247a_final/emg2qwerty_W26/logs/default-hybrid-CNN-LSTM/Training/job0_trainer.devices=1,user=multi_user/checkpoints/epoch=27-step=7896.ckpt'
+- train=False
+- trainer.accelerator=gpu
+- decoder=ctc_greedy

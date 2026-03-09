@@ -1,0 +1,4 @@
+- user=single_user
+- trainer.accelerator=gpu
+- trainer.devices=1
+- +trainer.limit_train_batches=0.6000000000000001

@@ -1,0 +1,3 @@
+- user=multi_user
+- trainer.accelerator=gpu
+- trainer.devices=1
