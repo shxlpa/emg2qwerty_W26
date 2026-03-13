@@ -3,6 +3,11 @@ to_tensor:
   _target_: emg2qwerty.transforms.ToTensor
   fields: [emg_left, emg_right]
 
+resample:
+  _target_: emg2qwerty.transforms.Resample
+  orig_freq: 2000
+  new_freq: 750
+
 band_rotation:
   _target_: emg2qwerty.transforms.ForEach  # i.i.d rotation offset for each band
   transform:
@@ -12,6 +17,10 @@ band_rotation:
 temporal_jitter:
   _target_: emg2qwerty.transforms.TemporalAlignmentJitter
   max_offset: 120  # Max 60ms jitter for 2kHz EMG
+
+channel_select:
+  _target_: emg2qwerty.transforms.SelectChannels
+  num_channels: 16
 
 logspec:
   _target_: emg2qwerty.transforms.LogSpectrogram
@@ -28,13 +37,17 @@ specaug:
 transforms:
   train:
     - ${to_tensor}
+    - ${resample}
     - ${band_rotation}
     - ${temporal_jitter}
+    - ${channel_select}
     - ${logspec}
     - ${specaug}
 
   val:
     - ${to_tensor}
+    - ${resample}
+    - ${channel_select}
     - ${logspec}
 
   test: ${transforms.val}

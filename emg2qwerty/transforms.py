@@ -243,3 +243,43 @@ class SpecAugment:
 
         # (..., C, freq, T) -> (T, ..., C, freq)
         return x.movedim(-1, 0)
+
+@dataclass
+class SelectChannels:
+    """Select a subset of electrode channels. Input shape: (T, bands, C, ...) 
+    after ToTensor, or (T, C) per band."""
+    num_channels: int = 8  # how many of the 16 to keep
+
+    def __call__(self, tensor: torch.Tensor) -> torch.Tensor:
+        # tensor shape after ToTensor: (T, bands=2, C=16)
+        return tensor[:, :, :self.num_channels]
+
+
+@dataclass
+class Resample:
+    """
+    Resample the signal along the time axis to a new sampling rate.
+
+    Args:
+        orig_freq (int): Original sampling rate in Hz.
+        new_freq (int): Target sampling rate in Hz.
+    """
+
+    orig_freq: int = 2000
+    new_freq: int = 1500
+
+    def __post_init__(self) -> None:
+        self.resampler = torchaudio.transforms.Resample(
+            orig_freq=self.orig_freq,
+            new_freq=self.new_freq,
+        )
+
+    def __call__(self, tensor: torch.Tensor) -> torch.Tensor:
+        # tensor shape after ToTensor: (T, bands=2, C=16)
+
+        # Resample expects (..., T), so move time to last dim
+        x = tensor.movedim(0, -1)      # (bands, C, T)
+
+        x = self.resampler(x)          # (bands, C, T_new)
+
+        return x.movedim(-1, 0)        # (T_new, bands, C)
