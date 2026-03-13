@@ -243,3 +243,13 @@ class SpecAugment:
 
         # (..., C, freq, T) -> (T, ..., C, freq)
         return x.movedim(-1, 0)
+
+@dataclass
+class SelectChannels:
+    """Select a subset of electrode channels. Input shape: (T, bands, C, ...) 
+    after ToTensor, or (T, C) per band."""
+    num_channels: int = 8  # how many of the 16 to keep
+
+    def __call__(self, tensor: torch.Tensor) -> torch.Tensor:
+        # tensor shape after ToTensor: (T, bands=2, C=16)
+        return tensor[:, :, :self.num_channels]
